@@ -13,22 +13,24 @@ function App() {
     setIsLoading(true);
     setError(null);
 
-    fetch("https://swapi.dev/api/films/")
+    fetch("") // It all worked with the Firebase URL #promise
       .then((res) => res.json())
       .then((data) => {
-        const transformedMovies = data.results.map((movie) => {
-          return {
-            id: movie.id,
-            title: movie.title,
-            releaseDate: movie.release_date,
-            openingText: movie.opening_crawl,
-          };
-        });
+        const lodadedMovies = [];
 
-        setMovies(transformedMovies);
+        for (const key in data) {
+          lodadedMovies.push({
+            id: key,
+            title: data[key].title,
+            releaseDate: data[key].releaseDate,
+            openingText: data[key].openingText,
+          });
+        }
+
+        setMovies(lodadedMovies);
       })
-      .catch((error) => {
-        setError("Something went wrong!");
+      .catch(() => {
+        setError("URL is no longer valid, sorry...");
       })
       .finally(() => {
         setIsLoading(false);
@@ -40,7 +42,16 @@ function App() {
   }, [fetchMoviesHandler]);
 
   function addMovieHandler(movie) {
-    console.log(movie);
+    fetch("", {
+      // Again, it all worked with the Firebase URL #promise
+      method: "POST",
+      body: JSON.stringify(movie),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data));
   }
 
   let content = <p>Found no movies.</p>;
